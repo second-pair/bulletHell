@@ -9,7 +9,7 @@ This won't be particularlly glamorous, unless I choose to develop it further dow
 
 ##  Programme Details
 This programme:
-- Is compiled to run on an iOS device.
+- Is written in Swift 4
 - Uses the XCode IDE.
 - Uses the SpriteKit engine.
-
+- Is compiled to run on an iOS device.
