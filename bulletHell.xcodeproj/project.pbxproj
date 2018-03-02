@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7508E4E02049A73100EF4EE5 /* alien2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4D62049A73100EF4EE5 /* alien2@3x.png */; };
+		7508E4E12049A73100EF4EE5 /* shuttle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4D72049A73100EF4EE5 /* shuttle@2x.png */; };
+		7508E4E22049A73100EF4EE5 /* shuttle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4D82049A73100EF4EE5 /* shuttle@3x.png */; };
+		7508E4E32049A73200EF4EE5 /* alien3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4D92049A73100EF4EE5 /* alien3@2x.png */; };
+		7508E4E42049A73200EF4EE5 /* torpedo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4DA2049A73100EF4EE5 /* torpedo@2x.png */; };
+		7508E4E52049A73200EF4EE5 /* alien2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4DB2049A73100EF4EE5 /* alien2@2x.png */; };
+		7508E4E62049A73200EF4EE5 /* torpedo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4DC2049A73100EF4EE5 /* torpedo@3x.png */; };
+		7508E4E72049A73200EF4EE5 /* alien@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4DD2049A73100EF4EE5 /* alien@2x.png */; };
+		7508E4E82049A73200EF4EE5 /* alien@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4DE2049A73100EF4EE5 /* alien@3x.png */; };
+		7508E4E92049A73200EF4EE5 /* alien3@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7508E4DF2049A73100EF4EE5 /* alien3@3x.png */; };
 		757CB4C32045CAF500B39687 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757CB4C22045CAF500B39687 /* AppDelegate.swift */; };
 		757CB4C52045CAF500B39687 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4C42045CAF500B39687 /* GameScene.sks */; };
 		757CB4C72045CAF500B39687 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4C62045CAF500B39687 /* Actions.sks */; };
@@ -15,9 +25,21 @@
 		757CB4CE2045CAF500B39687 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4CC2045CAF500B39687 /* Main.storyboard */; };
 		757CB4D02045CAF500B39687 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4CF2045CAF500B39687 /* Assets.xcassets */; };
 		757CB4D32045CAF500B39687 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4D12045CAF500B39687 /* LaunchScreen.storyboard */; };
+		757CB4DE2045CD0700B39687 /* backgroundSmoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */; };
+		757CB4DF2045CD0700B39687 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4DD2045CD0700B39687 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7508E4D62049A73100EF4EE5 /* alien2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alien2@3x.png"; sourceTree = "<group>"; };
+		7508E4D72049A73100EF4EE5 /* shuttle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shuttle@2x.png"; sourceTree = "<group>"; };
+		7508E4D82049A73100EF4EE5 /* shuttle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shuttle@3x.png"; sourceTree = "<group>"; };
+		7508E4D92049A73100EF4EE5 /* alien3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alien3@2x.png"; sourceTree = "<group>"; };
+		7508E4DA2049A73100EF4EE5 /* torpedo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "torpedo@2x.png"; sourceTree = "<group>"; };
+		7508E4DB2049A73100EF4EE5 /* alien2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alien2@2x.png"; sourceTree = "<group>"; };
+		7508E4DC2049A73100EF4EE5 /* torpedo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "torpedo@3x.png"; sourceTree = "<group>"; };
+		7508E4DD2049A73100EF4EE5 /* alien@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alien@2x.png"; sourceTree = "<group>"; };
+		7508E4DE2049A73100EF4EE5 /* alien@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alien@3x.png"; sourceTree = "<group>"; };
+		7508E4DF2049A73100EF4EE5 /* alien3@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "alien3@3x.png"; sourceTree = "<group>"; };
 		757CB4BF2045CAF500B39687 /* bulletHell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bulletHell.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		757CB4C22045CAF500B39687 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		757CB4C42045CAF500B39687 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -28,6 +50,8 @@
 		757CB4CF2045CAF500B39687 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		757CB4D22045CAF500B39687 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		757CB4D42045CAF500B39687 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = backgroundSmoke.sks; sourceTree = "<group>"; };
+		757CB4DD2045CD0700B39687 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,9 +65,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7508E4EA2049A74500EF4EE5 /* Sprites */ = {
+			isa = PBXGroup;
+			children = (
+				7508E4DD2049A73100EF4EE5 /* alien@2x.png */,
+				7508E4DE2049A73100EF4EE5 /* alien@3x.png */,
+				7508E4DB2049A73100EF4EE5 /* alien2@2x.png */,
+				7508E4D62049A73100EF4EE5 /* alien2@3x.png */,
+				7508E4D92049A73100EF4EE5 /* alien3@2x.png */,
+				7508E4DF2049A73100EF4EE5 /* alien3@3x.png */,
+				7508E4D72049A73100EF4EE5 /* shuttle@2x.png */,
+				7508E4D82049A73100EF4EE5 /* shuttle@3x.png */,
+				7508E4DA2049A73100EF4EE5 /* torpedo@2x.png */,
+				7508E4DC2049A73100EF4EE5 /* torpedo@3x.png */,
+			);
+			path = Sprites;
+			sourceTree = "<group>";
+		};
 		757CB4B62045CAF500B39687 = {
 			isa = PBXGroup;
 			children = (
+				757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */,
+				757CB4DD2045CD0700B39687 /* Assets.xcassets */,
+				7508E4EA2049A74500EF4EE5 /* Sprites */,
 				757CB4C12045CAF500B39687 /* bulletHell */,
 				757CB4C02045CAF500B39687 /* Products */,
 			);
@@ -132,11 +176,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7508E4E72049A73200EF4EE5 /* alien@2x.png in Resources */,
 				757CB4CE2045CAF500B39687 /* Main.storyboard in Resources */,
+				7508E4E22049A73100EF4EE5 /* shuttle@3x.png in Resources */,
+				7508E4E82049A73200EF4EE5 /* alien@3x.png in Resources */,
+				7508E4E32049A73200EF4EE5 /* alien3@2x.png in Resources */,
 				757CB4C52045CAF500B39687 /* GameScene.sks in Resources */,
+				7508E4E52049A73200EF4EE5 /* alien2@2x.png in Resources */,
 				757CB4D02045CAF500B39687 /* Assets.xcassets in Resources */,
+				7508E4E12049A73100EF4EE5 /* shuttle@2x.png in Resources */,
+				757CB4DE2045CD0700B39687 /* backgroundSmoke.sks in Resources */,
+				757CB4DF2045CD0700B39687 /* Assets.xcassets in Resources */,
+				7508E4E42049A73200EF4EE5 /* torpedo@2x.png in Resources */,
 				757CB4D32045CAF500B39687 /* LaunchScreen.storyboard in Resources */,
+				7508E4E62049A73200EF4EE5 /* torpedo@3x.png in Resources */,
+				7508E4E02049A73100EF4EE5 /* alien2@3x.png in Resources */,
 				757CB4C72045CAF500B39687 /* Actions.sks in Resources */,
+				7508E4E92049A73200EF4EE5 /* alien3@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
