@@ -18,9 +18,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     var player: SKSpriteNode!
     var exit: SKSpriteNode!
     var healthPowerup: SKSpriteNode!
-    var testBullet: SKSpriteNode!
-    var testBulletGroup: bulletGroup = bulletGroup ()
+    var theBullets: bulletGroupContainer!
     var bulletSpawnTimer: Timer!
+    var bulletDestroyTimer: Timer!
     
     
     //var lifeMeter: SKSpriteNode!
@@ -31,6 +31,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         {
             lifeMeter .text = "Life:  \(lifeCounter)"
         }
+    }
+    
+    //  Called before each frame is rendered
+    override func update (_ currentTime: TimeInterval)
+    {
+        theBullets .update ()
+        return
     }
     
     override func didMove (to view: SKView)
@@ -58,20 +65,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         self .addChild (lifeMeter)
         
         //  Initialise bullets
-        testBullet = SKSpriteNode (imageNamed: "torpedo")
-        bulletSpawnTimer = Timer .scheduledTimer (timeInterval: 1.5, target: self, selector: #selector (spawnBulletGroup), userInfo: nil, repeats: true)
-        self .addChild (testBulletGroup)
-        self .addChild (testBullet)
-    }
-    
-    override func update (_ currentTime: TimeInterval)
-    {
-        // Called before each frame is rendered
+        theBullets = bulletGroupContainer ()
+        self .addChild (theBullets)
+        
+        bulletSpawnTimer = Timer .scheduledTimer (timeInterval: 1.5, target: self, selector: #selector (spawnBulletGroup), userInfo: nil, repeats: false)
+        bulletDestroyTimer = Timer .scheduledTimer (timeInterval: 3.0, target: self, selector: #selector (destroyAllBullets), userInfo: nil, repeats: false)
+        
+        //  Done!
+        return
     }
     
     @objc func spawnBulletGroup ()
     {
-        testBulletGroup .create (withPattern: 0)
-        testBullet .position = CGPoint (x: -50, y: 50)
+        theBullets .addGroup (overridePattern: 0)
+        return
+    }
+    
+    @objc func destroyAllBullets ()
+    {
+        //theBullets .destroyAllBullets ()
+        theBullets .destroy ()
+        return
     }
 }
