@@ -13,6 +13,11 @@
 import SpriteKit
 import GameplayKit
 
+//  Global Bit Masks
+public let playerCategory: UInt32 = 0x1 << 0
+public let bulletCategory: UInt32 = 0x1 << 1
+public let wallCategory: UInt32 = 0x1 << 2
+
 class GameScene: SKScene, SKPhysicsContactDelegate
 {
     var background: SKEmitterNode!
@@ -22,7 +27,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     var theBullets: bulletGroupContainer!
     var bulletSpawnTimer: Timer!
     var bulletDestroyTimer: Timer!
-    
     
     
     
@@ -43,6 +47,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         return
     }
     
+    
+    
     override func didMove (to view: SKView)
     {
         //  Physics
@@ -61,6 +67,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         player .position = CGPoint (x: -250, y: -350)
         player .physicsBody = SKPhysicsBody (rectangleOf: player .size)
         player .physicsBody? .isDynamic = true
+        player .physicsBody? .categoryBitMask = playerCategory
+        player .physicsBody? .pinned = true
+        player .physicsBody? .allowsRotation = false
         self .addChild (player)
         
         //  Initialise life meter
@@ -90,6 +99,63 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     {
         //theBullets .destroyAllBullets ()
         theBullets .destroy ()
+        return
+    }
+    
+    func didBegin (_ contact: SKPhysicsContact)
+    {
+        /*
+         001 = 0x1 = Player
+         010 = 0x2 = Bullet
+         100 = 0x4 = Wall
+         011 = 0x3 = Player + Bullet
+         101 = 0x5 = Player + Wall
+         110 = 0x6 = Bullet + Wall
+        */
+        
+        var bodyLower: SKPhysicsBody
+        var bodyUpper: SKPhysicsBody
+        
+        //  Determine order of bodies
+        if contact .bodyA .categoryBitMask < contact .bodyB .categoryBitMask
+        {
+            bodyLower = contact .bodyA
+            bodyUpper = contact .bodyB
+        }
+        else
+        {
+            bodyLower = contact .bodyB
+            bodyUpper = contact .bodyA
+        }
+        
+        //  Check for player-bullet collision
+        if (bodyLower .categoryBitMask & playerCategory) != 0 && (bodyUpper .categoryBitMask & bulletCategory) != 0
+        {
+            collisionPlayerBullet (hitBy: bodyUpper .node as! SKSpriteNode)
+        }
+        
+        //  Check for player-wall collision
+        //  Check for bullet-wall collision
+    }
+    
+    //  Function for when the player is hit by a bullet
+    func collisionPlayerBullet (hitBy theBullet: SKSpriteNode)
+    {
+        theBullet .removeFromParent ()
+        lifeCounter -= 10
+        return
+    }
+    
+    //  Function for when the player hits a wall
+    func collisionPlayerWall ()
+    {
+        return
+    }
+    
+    //  Function for when a bullet hits a wall
+    func collisionBulletWall (hitBy theBullet: SKSpriteNode)
+    {
+        theBullet .removeFromParent ()
         return
     }
 }

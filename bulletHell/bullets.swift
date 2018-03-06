@@ -21,32 +21,39 @@ let pattern1Speed: Double = 3
 
 
 
-
 //  Class to contrain and manipulate a group of bullets
 //  These bullets fly in a fixed formation
 class bulletGroup: SKSpriteNode
 {
-    //  Array of bullets
     var theBullets: [SKSpriteNode] = [SKSpriteNode ()]
     var patternType: Int = 0
-    
     var travelSpeed: Double = 1
     var theVelocity: CGVector = CGVector (dx: 0, dy: 0)
     
+    
     public func update ()
     {
-        //  Update overall position
-        self .position .x += theVelocity .dx
-        self .position .y += theVelocity .dy
+        //  Ensure game scene is present
+        if theBullets .count > 0, let _ = scene
+        {
+            //  Check if bullet pack is outside of game window
+            if abs (self .position .x) > 250, abs (self .position .y) > 750
+            {
+                destroy ()
+            }
+            
+            //  Update overall position
+            self .position .x += theVelocity .dx
+            self .position .y += theVelocity .dy
+            
+            //  Update individual bullet positions
+            //  Maybe make bullet class with relative position?
+            //  Add local spin etc
+            
+            //  Check for player collision
+            
+        }
         
-        //  Update bullet positions
-        //  Maybe make bullet class with relative position?
-        
-        //  Add group velocity to player
-        //  Add local spin etc
-        //  Look to see if there are known methods for this
-        //  Will probably need to account for time
-        //  Check if bullet pack is outside of game window
         return
     }
     
@@ -121,8 +128,16 @@ class bulletGroup: SKSpriteNode
     {
         let theBullet: SKSpriteNode = SKSpriteNode (imageNamed: "torpedo")
         theBullet .position = CGPoint (x: theX, y: theY)
+        
+        //  Setup physics
         theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .size .width / 2)
         theBullet .physicsBody? .isDynamic = true
+        theBullet .physicsBody? .categoryBitMask = bulletCategory
+        theBullet .physicsBody? .contactTestBitMask = playerCategory
+        theBullet .physicsBody? .collisionBitMask = 0
+        theBullet .physicsBody? .usesPreciseCollisionDetection = true
+        
+        //  Finish up
         self .addChild (theBullet)
         theBullets .append (theBullet)
         return
