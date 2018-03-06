@@ -7,11 +7,22 @@
 //
 
 import SpriteKit
+import GameKit
 
 //  Each bullet will be an SKSpriteNode type
 //  Look into using property lists later on
 
-//  Group of bullets
+//  Global Variaables
+let maxPatterns: Int = 2
+let pattern0Range: Int = 100
+let pattern0Speed: Double = 4
+let pattern1Range: Int = 50
+let pattern1Speed: Double = 3
+
+
+
+
+//  Class to contrain and manipulate a group of bullets
 //  These bullets fly in a fixed formation
 class bulletGroup: SKSpriteNode
 {
@@ -19,29 +30,48 @@ class bulletGroup: SKSpriteNode
     var theBullets: [SKSpriteNode] = [SKSpriteNode ()]
     var patternType: Int = 0
     
-    var centrePoint: CGPoint!
-    var theVelocity: CGVector!
+    var travelSpeed: Double = 1
+    var theVelocity: CGVector = CGVector (dx: 0, dy: 0)
     
     public func update ()
     {
+        //  Update overall position
+        self .position .x += theVelocity .dx
+        self .position .y += theVelocity .dy
+        
+        //  Update bullet positions
+        //  Maybe make bullet class with relative position?
+        
         //  Add group velocity to player
         //  Add local spin etc
         //  Look to see if there are known methods for this
         //  Will probably need to account for time
+        //  Check if bullet pack is outside of game window
         return
     }
     
-    public func create (withPattern thePattern: Int = 0)
+    public func create (withPattern thePattern: Int = 0, withPlayerAt playerPos: CGPoint)
     {
-        //  For now, we're just creating 20 random bullets
-        for _ in 0 ... 499
+        //  Generate bullets according to the pattern type
+        //  This needs to happen first, as we set some variables based off this information
+        patternType = thePattern
+        switch patternType
         {
-            patternType = thePattern
-            genBullet ()
+        case 0:
+            pattern0 ()
+        case 1:
+            pattern1 ()
+        default:
+            pattern0 ()
         }
         
+        //  Grab the group's centre point
+        self .position = CGPoint (x: 0, y: 0)
+        
+        //  Calculate the group's vector to the player
+        theVelocity = vectorTowards (pointFrom: self .position, pointTo: playerPos)
+        
         //  Calculate spawn location somehow
-        //  Known centre-point
         //  Add group velocity to player
         //  Add local spin etc
     }
@@ -49,6 +79,23 @@ class bulletGroup: SKSpriteNode
     //  Maybe have one of these per pattern type?
     func pattern0 ()
     {
+        travelSpeed = pattern0Speed
+        //  Create 6 randomised bullets
+        for _ in 0 ... 5
+        {
+            let theRandomDist = GKRandomDistribution (randomSource: GKLinearCongruentialRandomSource (), lowestValue: -pattern0Range, highestValue: pattern0Range)
+            genBullet (overrideX: theRandomDist .nextInt (), overrideY: theRandomDist .nextInt ())
+        }
+        return
+    }
+    
+    func pattern1 ()
+    {
+        travelSpeed = pattern1Speed
+        genBullet (overrideX: Int (self .position .x) + pattern1Range, overrideY: Int (self .position .y) + pattern1Range)
+        genBullet (overrideX: Int (self .position .x) + pattern1Range, overrideY: Int (self .position .y) - pattern1Range)
+        genBullet (overrideX: Int (self .position .x) - pattern1Range, overrideY: Int (self .position .y) + pattern1Range)
+        genBullet (overrideX: Int (self .position .x) - pattern1Range, overrideY: Int (self .position .y) - pattern1Range)
         return
     }
     
@@ -57,7 +104,8 @@ class bulletGroup: SKSpriteNode
     func genBullet ()
     {
         //  Overload with no parameters -> generate random X and Y
-        genBulletOverrideCollector (withX: Int (arc4random_uniform (500)) - 250, withY: Int (arc4random_uniform (500)) - 250)
+        let theRandomDist = GKRandomDistribution (randomSource: GKLinearCongruentialRandomSource (), lowestValue: -250, highestValue: 250)
+        genBulletOverrideCollector (withX: theRandomDist .nextInt (), withY: theRandomDist .nextInt ())
         return
     }
     
@@ -73,9 +121,21 @@ class bulletGroup: SKSpriteNode
     {
         let theBullet: SKSpriteNode = SKSpriteNode (imageNamed: "torpedo")
         theBullet .position = CGPoint (x: theX, y: theY)
+        theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .size .width / 2)
+        theBullet .physicsBody? .isDynamic = true
         self .addChild (theBullet)
         theBullets .append (theBullet)
         return
+    }
+    
+    //  Calculates the normalised vector between two points
+    func vectorTowards (pointFrom thePoint1: CGPoint, pointTo thePoint2: CGPoint) -> CGVector
+    {
+        let xDiff = Double (thePoint2 .x - thePoint1 .x)
+        let yDiff = Double (thePoint2 .y - thePoint1 .y)
+        let normaliser = travelSpeed / sqrt (xDiff * xDiff + yDiff * yDiff)
+        let theVector = CGVector (dx: xDiff * normaliser, dy: yDiff * normaliser)
+        return theVector
     }
     
     public func destroy ()
@@ -88,11 +148,24 @@ class bulletGroup: SKSpriteNode
     }
 }
 
+
+
+//  Class to contain and manipulate an array of bullet groups
 class bulletGroupContainer: SKSpriteNode
 {
     //  Array of bullet groups
     var theGroups: [bulletGroup] = [bulletGroup ()]
     var nextPattern: Int = 0
+    {
+        didSet
+        {
+            if nextPattern >= maxPatterns
+            {
+                nextPattern = 0
+                return
+            }
+        }
+    }
     
     public func update ()
     {
@@ -112,22 +185,23 @@ class bulletGroupContainer: SKSpriteNode
         return
     }
     
-    public func addGroup ()
+    public func addGroup (withPlayerAt playerPos: CGPoint)
     {
-        addGroupOverrideCollector (withPattern: nextPattern)
+        addGroupOverrideCollector (withPattern: nextPattern, withPlayerAt: playerPos)
+        nextPattern += 1
         return
     }
     
-    public func addGroup (overridePattern newPattern: Int)
+    public func addGroup (overridePattern newPattern: Int, withPlayerAt playerPos: CGPoint)
     {
-        addGroupOverrideCollector (withPattern: newPattern)
+        addGroupOverrideCollector (withPattern: newPattern, withPlayerAt: playerPos)
         return
     }
     
-    func addGroupOverrideCollector (withPattern thePattern: Int)
+    func addGroupOverrideCollector (withPattern thePattern: Int, withPlayerAt playerPos: CGPoint)
     {
         let newGroup = bulletGroup ()
-        newGroup .create (withPattern: thePattern)
+        newGroup .create (withPattern: thePattern, withPlayerAt: playerPos)
         self .addChild (newGroup)
         theGroups .append (newGroup)
         return

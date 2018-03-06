@@ -6,8 +6,9 @@
 //  Copyright © 2018 Blair Edwards. All rights reserved.
 //
 
-//  TODO:  Generated bullets aren't created properly - only manual bullet shows up
-//  Timer seems to work fine though
+//  Assets From:  https://github.com/brianadvent/SpaceGameReloaded
+
+//  TODO:  Everything.
 
 import SpriteKit
 import GameplayKit
@@ -21,6 +22,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     var theBullets: bulletGroupContainer!
     var bulletSpawnTimer: Timer!
     var bulletDestroyTimer: Timer!
+    
+    
     
     
     //var lifeMeter: SKSpriteNode!
@@ -54,7 +57,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         
         //  Initialise player
         player = SKSpriteNode (imageNamed: "shuttle")
-        player .position = CGPoint (x: 1000, y: 0)
+        //player .position = CGPoint (x: player .frame .size .height - (self .frame .size .height / 2) + 10, y: 0)
+        player .position = CGPoint (x: -250, y: -350)
+        player .physicsBody = SKPhysicsBody (rectangleOf: player .size)
+        player .physicsBody? .isDynamic = true
         self .addChild (player)
         
         //  Initialise life meter
@@ -68,8 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         theBullets = bulletGroupContainer ()
         self .addChild (theBullets)
         
-        bulletSpawnTimer = Timer .scheduledTimer (timeInterval: 1.5, target: self, selector: #selector (spawnBulletGroup), userInfo: nil, repeats: false)
-        bulletDestroyTimer = Timer .scheduledTimer (timeInterval: 3.0, target: self, selector: #selector (destroyAllBullets), userInfo: nil, repeats: false)
+        bulletSpawnTimer = Timer .scheduledTimer (timeInterval: 2.0, target: self, selector: #selector (spawnBulletGroup), userInfo: nil, repeats: true)
         
         //  Done!
         return
@@ -77,7 +82,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     
     @objc func spawnBulletGroup ()
     {
-        theBullets .addGroup (overridePattern: 0)
+        theBullets .addGroup (withPlayerAt: player .position)
         return
     }
     
