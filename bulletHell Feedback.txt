@@ -1,0 +1,9 @@
+Spaceship too large, hotbox is off <- scaled spaceship to accommodate
+Spaceship too snappy <- added weighting of new acceleration to old
+Spaceship too "slow" <- adjusted acceleration scale so ship responds faster to a given tilt
+Bullets are too random <- Drew up plans for bullet patterns
+Bullets should move in non-static ways <- Added plans for local bullet movement to bullet patterns
+
+TODO:
+Game world too small <- looking in to having scrolling stage
+Game over system <- looking into programming a game over and highscore system

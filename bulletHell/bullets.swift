@@ -12,7 +12,7 @@ import GameKit
 //  Each bullet will be an SKSpriteNode type
 //  Look into using property lists later on
 
-//  Global Variaables
+//  Global Variables
 let maxPatterns: Int = 2
 let pattern0Range: Int = 100
 let pattern0Speed: Double = 4
@@ -128,6 +128,7 @@ class bulletGroup: SKSpriteNode
     {
         let theBullet: SKSpriteNode = SKSpriteNode (imageNamed: "torpedo")
         theBullet .position = CGPoint (x: theX, y: theY)
+        theBullet .setScale (0.8)
         
         //  Setup physics
         theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .size .width / 2)
