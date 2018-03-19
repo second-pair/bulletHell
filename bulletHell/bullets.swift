@@ -13,6 +13,7 @@ import GameKit
 //  Look into using property lists later on
 
 //  Global Variables
+let bulletRadius: CGFloat = 4.0
 let maxPatterns: Int = 2
 let pattern0Range: Int = 100
 let pattern0Speed: Double = 4
@@ -23,9 +24,9 @@ let pattern1Speed: Double = 3
 
 //  Class to contrain and manipulate a group of bullets
 //  These bullets fly in a fixed formation
-class bulletGroup: SKSpriteNode
+class bulletGroup: SKShapeNode
 {
-    var theBullets: [SKSpriteNode] = [SKSpriteNode ()]
+    var theBullets: [SKShapeNode] = [SKShapeNode ()]
     var patternType: Int = 0
     var travelSpeed: Double = 1
     var theVelocity: CGVector = CGVector (dx: 0, dy: 0)
@@ -49,9 +50,6 @@ class bulletGroup: SKSpriteNode
             //  Update individual bullet positions
             //  Maybe make bullet class with relative position?
             //  Add local spin etc
-            
-            //  Check for player collision
-            
         }
         
         return
@@ -126,15 +124,16 @@ class bulletGroup: SKSpriteNode
     //  Shared code used by both overload functions
     func genBulletOverrideCollector (withX theX: Int, withY theY: Int)
     {
-        let theBullet: SKSpriteNode = SKSpriteNode (imageNamed: "torpedo")
+        let theBullet: SKShapeNode = SKShapeNode (circleOfRadius: bulletRadius)
         theBullet .position = CGPoint (x: theX, y: theY)
-        theBullet .setScale (0.8)
+        theBullet .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        theBullet .fillColor = #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1)
         
         //  Setup physics
-        theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .size .width / 2)
+        theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .frame .size .width / 2)
         theBullet .physicsBody? .isDynamic = true
         theBullet .physicsBody? .categoryBitMask = bulletCategory
-        theBullet .physicsBody? .contactTestBitMask = playerCategory
+        theBullet .physicsBody? .contactTestBitMask = playerCategory// + wallCategory
         theBullet .physicsBody? .collisionBitMask = 0
         theBullet .physicsBody? .usesPreciseCollisionDetection = true
         

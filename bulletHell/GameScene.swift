@@ -26,9 +26,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     let playerMoveScaleY: CGFloat = 25
     let playerMoveRatioX: CGFloat = 0.9
     let playerMoveRatioY: CGFloat = 0.9
+    var playerShapePath = [CGPoint (x: 0, y: -4), CGPoint (x: -8, y: -12), CGPoint (x: 0, y: 12), CGPoint (x: 8, y: -12), CGPoint (x: 0, y: -4)]
+    let playerStartPoint = CGPoint (x: -250, y: -350)
     
     var background: SKEmitterNode!
-    var player: SKSpriteNode!
+    var player: SKShapeNode!
     var exit: SKSpriteNode!
     var healthPowerup: SKSpriteNode!
     var theBullets: bulletGroupContainer!
@@ -118,13 +120,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         self .addChild (lifeMeter)
         
         //  Initialise player
-        player = SKSpriteNode (imageNamed: "shuttle")
-        player .setScale (0.5)
-        player .position = CGPoint (x: -250, y: -350)
-        player .physicsBody = SKPhysicsBody (rectangleOf: player .size)
+        player = SKShapeNode (points: &self .playerShapePath, count: self .playerShapePath .count)
+        player .position = self .playerStartPoint
+        player .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        player .fillColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
+        
+        //  Physics
+        player .physicsBody = SKPhysicsBody (polygonFrom: player .path!)
         player .physicsBody? .isDynamic = true
         player .physicsBody? .categoryBitMask = playerCategory
         player .physicsBody? .allowsRotation = false
+    
         self .addChild (player)
         
         //  Initialise bullets
@@ -184,10 +190,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             bodyUpper = contact .bodyA
         }
         
+        let combBitMask = bodyLower .categoryBitMask + bodyUpper .categoryBitMask
         //  Check for player-bullet collision
-        if (bodyLower .categoryBitMask & playerCategory) != 0 && (bodyUpper .categoryBitMask & bulletCategory) != 0
+        if combBitMask == 3
         {
-            collisionPlayerBullet (hitBy: bodyUpper .node as! SKSpriteNode)
+            collisionPlayerBullet (hitBy: bodyUpper .node as! SKShapeNode)
+        }
+        //  Check for bullet-wall collision
+        else if combBitMask == 6
+        {
+            collisionBulletWall (hitBy: bodyLower .node as! SKShapeNode)
         }
         
         //  Check for player-wall collision
@@ -195,7 +207,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     }
     
     //  Function for when the player is hit by a bullet
-    func collisionPlayerBullet (hitBy theBullet: SKSpriteNode)
+    func collisionPlayerBullet (hitBy theBullet: SKShapeNode)
     {
         theBullet .removeFromParent ()
         lifeCounter -= 10
@@ -209,7 +221,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     }
     
     //  Function for when a bullet hits a wall
-    func collisionBulletWall (hitBy theBullet: SKSpriteNode)
+    func collisionBulletWall (hitBy theBullet: SKShapeNode)
     {
         theBullet .removeFromParent ()
         return

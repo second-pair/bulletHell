@@ -7,3 +7,6 @@ Bullets should move in non-static ways <- Added plans for local bullet movement 
 TODO:
 Game world too small <- looking in to having scrolling stage
 Game over system <- looking into programming a game over and highscore system
+Health pickup system <- determine how much to add, fixed positions vs random spawns near player (people saying random spawns cooler, fixed positions better design)
+Having to hold phone horizontally is difficult <- looking to use different plane
+Add "walls are lava" <- should implement knock back + life lost
