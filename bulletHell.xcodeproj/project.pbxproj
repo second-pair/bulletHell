@@ -28,7 +28,6 @@
 		757CB4D02045CAF500B39687 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4CF2045CAF500B39687 /* Assets.xcassets */; };
 		757CB4D32045CAF500B39687 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4D12045CAF500B39687 /* LaunchScreen.storyboard */; };
 		757CB4DE2045CD0700B39687 /* backgroundSmoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */; };
-		757CB4DF2045CD0700B39687 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 757CB4DD2045CD0700B39687 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,7 +54,6 @@
 		757CB4D22045CAF500B39687 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		757CB4D42045CAF500B39687 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = backgroundSmoke.sks; sourceTree = "<group>"; };
-		757CB4DD2045CD0700B39687 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,8 +87,6 @@
 		757CB4B62045CAF500B39687 = {
 			isa = PBXGroup;
 			children = (
-				757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */,
-				757CB4DD2045CD0700B39687 /* Assets.xcassets */,
 				7508E4EA2049A74500EF4EE5 /* Sprites */,
 				757CB4C12045CAF500B39687 /* bulletHell */,
 				757CB4C02045CAF500B39687 /* Products */,
@@ -108,6 +104,7 @@
 		757CB4C12045CAF500B39687 /* bulletHell */ = {
 			isa = PBXGroup;
 			children = (
+				757CB4DC2045CD0700B39687 /* backgroundSmoke.sks */,
 				757CB4C22045CAF500B39687 /* AppDelegate.swift */,
 				754A453520603B3500EC9EFB /* walls.swift */,
 				7508E4EB2049B6E000EF4EE5 /* bullets.swift */,
@@ -192,7 +189,6 @@
 				757CB4D02045CAF500B39687 /* Assets.xcassets in Resources */,
 				7508E4E12049A73100EF4EE5 /* shuttle@2x.png in Resources */,
 				757CB4DE2045CD0700B39687 /* backgroundSmoke.sks in Resources */,
-				757CB4DF2045CD0700B39687 /* Assets.xcassets in Resources */,
 				7508E4E42049A73200EF4EE5 /* torpedo@2x.png in Resources */,
 				757CB4D32045CAF500B39687 /* LaunchScreen.storyboard in Resources */,
 				7508E4E62049A73200EF4EE5 /* torpedo@3x.png in Resources */,

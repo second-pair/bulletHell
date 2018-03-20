@@ -6,8 +6,6 @@
 //  Copyright © 2018 Blair Edwards. All rights reserved.
 //
 
-//  Assets From:  https://github.com/brianadvent/SpaceGameReloaded
-
 //  TODO:  Everything.
 
 import SpriteKit
@@ -26,6 +24,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     let playerMoveScaleY: CGFloat = 25
     let playerMoveRatioX: CGFloat = 0.9
     let playerMoveRatioY: CGFloat = 0.9
+    let playerMaxAccX: CGFloat = 8
+    let playerMaxAccY: CGFloat = 8
     var playerShapePath = [CGPoint (x: 0, y: -4), CGPoint (x: -8, y: -12), CGPoint (x: 0, y: 12), CGPoint (x: 8, y: -12), CGPoint (x: 0, y: -4)]
     let playerStartPoint = CGPoint (x: -250, y: -350)
     
@@ -63,9 +63,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     
     override func didSimulatePhysics ()
     {
+        //  Don't know how to prevent player skipping over wall - IE when acceleration is great enough to place player on other side of wall in 1 frame
+        //  For now, limiting max acceleration to +/-5 in either axis
+        
         //  Add tilt-acceleration to player's position
-        player .position .x += xAcceleration * playerMoveScaleX
-        player .position .y += yAcceleration * playerMoveScaleY
+        //  Constrain X acceleration to "safe" values
+        let tempAccX = xAcceleration * playerMoveScaleX
+        if tempAccX > playerMaxAccX
+        {
+            player .position .x += playerMaxAccX
+        }
+        else if tempAccX < -playerMaxAccX
+        {
+            player .position .x -= playerMaxAccX
+        }
+        else
+        {
+            player .position .x += tempAccX
+        }
+        //  Constrain Y acceleration to "safe" values
+        let tempAccY = yAcceleration * playerMoveScaleY
+        if tempAccY > playerMaxAccY
+        {
+            player .position .y += playerMaxAccY
+        }
+        else if tempAccY < -playerMaxAccY
+        {
+            player .position .y -= playerMaxAccY
+        }
+        else
+        {
+            player .position .y += tempAccY
+        }
+        
+        
         
         //  Out-of-bounds handling - will hopefully just be a catch-all later
         if player .position .x < -self .frame .size .width / 2
@@ -122,13 +153,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         //  Initialise player
         player = SKShapeNode (points: &self .playerShapePath, count: self .playerShapePath .count)
         player .position = self .playerStartPoint
+        player .zPosition = 0
         player .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-        player .fillColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
+        player .fillColor = #colorLiteral(red: 0.9098039269, green: 0.5428974354, blue: 0.8157360767, alpha: 1)
         
         //  Physics
         player .physicsBody = SKPhysicsBody (polygonFrom: player .path!)
         player .physicsBody? .isDynamic = true
         player .physicsBody? .categoryBitMask = playerCategory
+        player .physicsBody? .contactTestBitMask = bulletCategory
+        player .physicsBody? .collisionBitMask = bulletCategory + wallCategory
         player .physicsBody? .allowsRotation = false
     
         self .addChild (player)
@@ -196,14 +230,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         {
             collisionPlayerBullet (hitBy: bodyUpper .node as! SKShapeNode)
         }
+        //  Check for player-wall collision
+        else if combBitMask == 5
+        {
+            collisionPlayerWall (hitInto: bodyUpper .node as! SKShapeNode)
+        }
         //  Check for bullet-wall collision
         else if combBitMask == 6
         {
             collisionBulletWall (hitBy: bodyLower .node as! SKShapeNode)
         }
-        
-        //  Check for player-wall collision
-        //  Check for bullet-wall collision
     }
     
     //  Function for when the player is hit by a bullet
@@ -215,8 +251,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     }
     
     //  Function for when the player hits a wall
-    func collisionPlayerWall ()
+    func collisionPlayerWall (hitInto theWall: SKShapeNode)
     {
+        //  Check if player encroaching on wall
+        if theWall .frame .width == 10
+        {
+            //  Wall extends along y-plane
+            if player .position .x > theWall .position .x
+            {
+                //  Player is on x+ side of wall
+                player .position .x = theWall .position .x + (theWall .frame .width / 2)
+            }
+            else
+            {
+                //  Player is on x- side of wall
+                player .position .x = theWall .position .x - (theWall .frame .width / 2)
+            }
+        }
+        else
+        {
+            //  Wall extends along x-plane
+            if player .position .y > theWall .position .y
+            {
+                //  Player is on y+ side of wall
+                player .position .y = theWall .position .y + (theWall .frame .height / 2)
+            }
+            else
+            {
+                //  Player is on y- side of wall
+                player .position .y = theWall .position .y - (theWall .frame .height / 2)
+            }
+        }
+        
+        lifeCounter -= 10
         return
     }
     

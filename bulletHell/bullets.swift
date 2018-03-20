@@ -70,6 +70,8 @@ class bulletGroup: SKShapeNode
             pattern0 ()
         }
         
+        self .zPosition = 1
+        
         //  Grab the group's centre point
         self .position = CGPoint (x: 0, y: 0)
         
@@ -126,16 +128,17 @@ class bulletGroup: SKShapeNode
     {
         let theBullet: SKShapeNode = SKShapeNode (circleOfRadius: bulletRadius)
         theBullet .position = CGPoint (x: theX, y: theY)
+        theBullet .zPosition = 1
         theBullet .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-        theBullet .fillColor = #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1)
+        theBullet .fillColor = #colorLiteral(red: 0.9764705896, green: 0.9324309088, blue: 0.5961062967, alpha: 1)
         
         //  Setup physics
         theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .frame .size .width / 2)
         theBullet .physicsBody? .isDynamic = true
         theBullet .physicsBody? .categoryBitMask = bulletCategory
-        theBullet .physicsBody? .contactTestBitMask = playerCategory// + wallCategory
-        theBullet .physicsBody? .collisionBitMask = 0
-        theBullet .physicsBody? .usesPreciseCollisionDetection = true
+        theBullet .physicsBody? .contactTestBitMask = playerCategory
+        theBullet .physicsBody? .collisionBitMask = playerCategory
+        theBullet .physicsBody? .allowsRotation = false
         
         //  Finish up
         self .addChild (theBullet)
