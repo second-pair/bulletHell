@@ -3,6 +3,8 @@ Spaceship too snappy <- added weighting of new acceleration to old
 Spaceship too "slow" <- adjusted acceleration scale so ship responds faster to a given tilt
 Bullets are too random <- Drew up plans for bullet patterns
 Bullets should move in non-static ways <- Added plans for local bullet movement to bullet patterns
+Found possible to clip through wall-border edges moving vertically <- added game wall padding
+No "end-state" <- added exit goal to complete the level
 
 TODO:
 More levels <- look into producing a level-progression system upon reaching the exit
@@ -13,3 +15,5 @@ Having to hold phone horizontally is difficult <- looking to use different plane
 Add "walls are lava" <- should implement knock back + life lost
 Bullets carry on being spawned while "paused" <- look into this
 Add ship rotation to follow movement
+No reset system <- look into resetting the game once cleared
+Issue where bullet spawns will stack while app is in background

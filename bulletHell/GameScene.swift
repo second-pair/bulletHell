@@ -16,6 +16,7 @@ import CoreMotion
 public let playerCategory: UInt32 = 0x1 << 0
 public let bulletCategory: UInt32 = 0x1 << 1
 public let wallCategory: UInt32 = 0x1 << 2
+public let exitCategory: UInt32 = 0x1 << 3
 
 class GameScene: SKScene, SKPhysicsContactDelegate
 {
@@ -28,27 +29,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     let playerMaxAccY: CGFloat = 8
     var playerShapePath = [CGPoint (x: 0, y: -4), CGPoint (x: -8, y: -12), CGPoint (x: 0, y: 12), CGPoint (x: 8, y: -12), CGPoint (x: 0, y: -4)]
     let playerStartPoint = CGPoint (x: -250, y: -350)
+    //let playerStartPoint = CGPoint (x: 350, y: 630)
+    let mapExtraPadding: CGFloat = 4
     
+    let levelFinishedBoxPadding: CGFloat = 70
+    
+    //  Tilt Controls
+    let motionManager = CMMotionManager ()
+    var xAcceleration: CGFloat = 0
+    var yAcceleration: CGFloat = 0
+    
+    //  Objects
     var background: SKEmitterNode!
     var player: SKShapeNode!
-    var exit: SKSpriteNode!
+    var exit: SKShapeNode!
+    var levelCompleteBox: SKShapeNode!
+    var levelFailedBox: SKShapeNode!
+    var levelCompleteLabel: SKLabelNode!
+    var levelFailedLabel: SKLabelNode!
     var healthPowerup: SKSpriteNode!
     var theBullets: bulletGroupContainer!
     var bulletSpawnTimer: Timer!
     var bulletDestroyTimer: Timer!
     var theWalls: wallContainer!
     
-    let motionManager = CMMotionManager ()
-    var xAcceleration: CGFloat = 0
-    var yAcceleration: CGFloat = 0
-    
-    //var lifeMeter: SKSpriteNode!
     var lifeMeter: SKLabelNode!
     var lifeCounter: Int = 0
     {
         didSet
         {
-            lifeMeter .text = "Life:  \(lifeCounter)"
+            if lifeCounter >= 0
+            {
+                lifeMeter .text = "Life:  \(lifeCounter)"
+                if lifeCounter == 0
+                {
+                    playerDied ()
+                }
+            }
         }
     }
     
@@ -64,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     override func didSimulatePhysics ()
     {
         //  Don't know how to prevent player skipping over wall - IE when acceleration is great enough to place player on other side of wall in 1 frame
-        //  For now, limiting max acceleration to +/-5 in either axis
+        //  For now, limiting max acceleration to +/-8 in either axis
         
         //  Add tilt-acceleration to player's position
         //  Constrain X acceleration to "safe" values
@@ -81,6 +98,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         {
             player .position .x += tempAccX
         }
+        
         //  Constrain Y acceleration to "safe" values
         let tempAccY = yAcceleration * playerMoveScaleY
         if tempAccY > playerMaxAccY
@@ -96,24 +114,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate
             player .position .y += tempAccY
         }
         
-        
-        
         //  Out-of-bounds handling - will hopefully just be a catch-all later
-        if player .position .x < -self .frame .size .width / 2
+        if player .position .x < -self .frame .size .width / 2 + mapExtraPadding
         {
-            player .position .x = -self .frame .size .width / 2
+            player .position .x = -self .frame .size .width / 2 + mapExtraPadding
         }
-        else if player .position .x > self .frame .size .width / 2
+        else if player .position .x > self .frame .size .width / 2 - mapExtraPadding
         {
-            player .position .x = self .frame .size .width / 2
+            player .position .x = self .frame .size .width / 2 - mapExtraPadding
         }
-        if player .position .y < -self .frame .size .height / 2
+        if player .position .y < -self .frame .size .height / 2 + mapExtraPadding
         {
-            player .position .y = -self .frame .size .height / 2
+            player .position .y = -self .frame .size .height / 2 + mapExtraPadding
         }
-        else if player .position .y > self .frame .size .height / 2
+        else if player .position .y > self .frame .size .height / 2 - mapExtraPadding
         {
-            player .position .y = self .frame .size .height / 2
+            player .position .y = self .frame .size .height / 2 - mapExtraPadding
         }
     }
     
@@ -150,21 +166,66 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         lifeMeter .fontSize = 30
         self .addChild (lifeMeter)
         
+        //  Initialise exit
+        exit = SKShapeNode (circleOfRadius: 50)
+        exit .position = CGPoint (x: 188, y: 556)
+        exit .zPosition = -0.9
+        exit .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        exit .fillColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        //  Exit physics
+        exit .physicsBody = SKPhysicsBody (circleOfRadius: exit .frame .size .width / 2)
+        exit .physicsBody? .isDynamic = false
+        exit .physicsBody? .categoryBitMask = exitCategory
+        exit .physicsBody? .contactTestBitMask = playerCategory
+        exit .physicsBody? .collisionBitMask = playerCategory
+        exit .physicsBody? .allowsRotation = false
+        //  Add to parent
+        self .addChild (exit)
+        
+        //  Initialise level complete stuff
+        //  Complete Label
+        levelCompleteLabel = SKLabelNode ()
+        levelCompleteLabel .position = CGPoint (x: 0, y: 0)
+        levelCompleteLabel .zPosition = 1
+        levelCompleteLabel .text = "Level Complete!"
+        levelCompleteLabel .fontColor = #colorLiteral(red: 0.2609674155, green: 0.3067450893, blue: 0.3219114313, alpha: 1)
+        levelCompleteLabel .fontSize = 60
+        levelCompleteLabel .verticalAlignmentMode = SKLabelVerticalAlignmentMode .center
+        //  Failed Label
+        levelFailedLabel = SKLabelNode ()
+        levelFailedLabel .position = CGPoint (x: 0, y: 0)
+        levelFailedLabel .zPosition = 1
+        levelFailedLabel .text = "Level Failed..."
+        levelFailedLabel .fontColor = #colorLiteral(red: 0.2609674155, green: 0.3067450893, blue: 0.3219114313, alpha: 1)
+        levelFailedLabel .fontSize = 60
+        levelFailedLabel .verticalAlignmentMode = SKLabelVerticalAlignmentMode .center
+        //  Complete Box
+        levelCompleteBox = SKShapeNode (rectOf: CGSize (width: levelCompleteLabel .frame .size .width + levelFinishedBoxPadding + 60, height: levelCompleteLabel .frame .size .height + levelFinishedBoxPadding), cornerRadius: 16)
+        levelCompleteBox .position = CGPoint (x: 0, y: 0)
+        levelCompleteBox .zPosition = 0.9
+        levelCompleteBox .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        levelCompleteBox .fillColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        //  Failed Box
+        levelFailedBox = SKShapeNode (rectOf: CGSize (width: levelFailedLabel .frame .size .width + levelFinishedBoxPadding, height: levelFailedLabel .frame .size .height + levelFinishedBoxPadding), cornerRadius: 16)
+        levelFailedBox .position = CGPoint (x: 0, y: 0)
+        levelFailedBox .zPosition = 0.9
+        levelFailedBox .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        levelFailedBox .fillColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        
         //  Initialise player
         player = SKShapeNode (points: &self .playerShapePath, count: self .playerShapePath .count)
         player .position = self .playerStartPoint
         player .zPosition = 0
         player .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
         player .fillColor = #colorLiteral(red: 0.9098039269, green: 0.5428974354, blue: 0.8157360767, alpha: 1)
-        
-        //  Physics
+        //  Player physics
         player .physicsBody = SKPhysicsBody (polygonFrom: player .path!)
         player .physicsBody? .isDynamic = true
         player .physicsBody? .categoryBitMask = playerCategory
         player .physicsBody? .contactTestBitMask = bulletCategory
-        player .physicsBody? .collisionBitMask = bulletCategory + wallCategory
+        player .physicsBody? .collisionBitMask = bulletCategory + wallCategory + exitCategory
         player .physicsBody? .allowsRotation = false
-    
+        //  Add to parent
         self .addChild (player)
         
         //  Initialise bullets
@@ -188,11 +249,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         return
     }
     
-    @objc func destroyAllBullets ()
+    func playerDied ()
     {
-        //theBullets .destroyAllBullets ()
+        player .removeFromParent ()
         theBullets .destroy ()
-        return
+        self .addChild (levelFailedBox)
+        self .addChild (levelFailedLabel)
     }
     
     
@@ -201,18 +263,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     func didBegin (_ contact: SKPhysicsContact)
     {
         /*
-         001 = 0x1 = Player
-         010 = 0x2 = Bullet
-         100 = 0x4 = Wall
-         011 = 0x3 = Player + Bullet
-         101 = 0x5 = Player + Wall
-         110 = 0x6 = Bullet + Wall
+         0001 = 0x1 = Player
+         0010 = 0x2 = Bullet
+         0100 = 0x4 = Wall
+         1000 = 0x8 = Exit
+         0011 = 0x3 = Player + Bullet
+         0101 = 0x5 = Player + Wall
+         0110 = 0x6 = Bullet + Wall
+         1001 = 0x9 = Player + Exit
         */
         
+        //  Determine order of bodies
         var bodyLower: SKPhysicsBody
         var bodyUpper: SKPhysicsBody
-        
-        //  Determine order of bodies
         if contact .bodyA .categoryBitMask < contact .bodyB .categoryBitMask
         {
             bodyLower = contact .bodyA
@@ -240,6 +303,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         {
             collisionBulletWall (hitBy: bodyLower .node as! SKShapeNode)
         }
+        //  Check for player-exit collision
+        else if combBitMask == 9
+        {
+            collisionPlayerExit ()
+        }
+        
+        return
     }
     
     //  Function for when the player is hit by a bullet
@@ -292,5 +362,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     {
         theBullet .removeFromParent ()
         return
+    }
+    
+    //  Function for when the player hits the exit
+    func collisionPlayerExit ()
+    {
+        exit .removeFromParent ()
+        player .removeFromParent ()
+        theBullets .destroy ()
+        self .addChild (levelFailedBox)
+        self .addChild (levelCompleteLabel)
     }
 }

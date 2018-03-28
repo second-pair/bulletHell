@@ -128,13 +128,13 @@ class bulletGroup: SKShapeNode
     {
         let theBullet: SKShapeNode = SKShapeNode (circleOfRadius: bulletRadius)
         theBullet .position = CGPoint (x: theX, y: theY)
-        theBullet .zPosition = 1
+        theBullet .zPosition = 0.8
         theBullet .strokeColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
         theBullet .fillColor = #colorLiteral(red: 0.9764705896, green: 0.9324309088, blue: 0.5961062967, alpha: 1)
         
         //  Setup physics
         theBullet .physicsBody = SKPhysicsBody (circleOfRadius: theBullet .frame .size .width / 2)
-        theBullet .physicsBody? .isDynamic = true
+        theBullet .physicsBody? .isDynamic = false
         theBullet .physicsBody? .categoryBitMask = bulletCategory
         theBullet .physicsBody? .contactTestBitMask = playerCategory
         theBullet .physicsBody? .collisionBitMask = playerCategory
